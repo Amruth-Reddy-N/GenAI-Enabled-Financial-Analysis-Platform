@@ -50,4 +50,52 @@ By leveraging **Generative AI (GPT-3.5)** with **prompt engineering**, the syste
 -  **Enterprise Value** – Demonstrated the synergy of **Generative AI + Finance** for analysts, investors, and decision-makers.  
 -  **Scalability** – Platform designed to scale across industries and document types.  
 
+## Quickstart
+
+```bash
+# 1) Install dependencies
+pip install -r requirements.txt
+
+# 2) (Optional) Create sample docs
+python scripts/create_samples.py
+
+# 3) Index documents
+python scripts/index_folder.py
+
+# 4) Run API
+uvicorn app.api:app --reload
+
+# Endpoints
+# POST /upload   -> upload files (form-data, multiple)
+# POST /index    -> build index from data/docs
+# POST /query    -> { "question": "What was ACME's Q2 net income?" }
+# GET  /health
+```
+
+## Environment
+
+Set the following environment variables (e.g., in a `.env` you export before running):
+
+- `OPENAI_API_KEY`=...
+- `OPENAI_MODEL`=gpt-3.5-turbo (default)
+- `EMBED_MODEL`=text-embedding-3-small (default)
+- `CHUNK_SIZE`=900 (tokens approximated by words here)
+- `CHUNK_OVERLAP`=150
+- `TOP_K`=4
+
+## How it works
+
+1. **Ingestion**: Parses PDF/DOCX/TXT into raw text (`src/ingest.py`).
+2. **Chunking**: Splits text into overlapping chunks (`src/chunk.py`).
+3. **Embeddings**: Creates OpenAI embeddings for chunks and queries (`src/embeddings.py`).
+4. **Index**: Saves a lightweight vector index with metadata (`src/index.py`).
+5. **RAG**: Retrieves top-k contexts and queries the LLM with a guarded prompt (`src/rag.py`).
+6. **API**: Exposes `/upload`, `/index`, `/query` endpoints via FastAPI (`app/api.py`).
+
+## Notes
+
+- This code keeps the dependencies minimal and avoids vendor lock-in frameworks.
+- Replace the prompt/guardrails in `src/rag.py` to adapt tone and compliance.
+- For production: add auth, rate limiting, persistent storage, and batching.
+
 ---

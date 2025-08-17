@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+python-multipart
+pydantic
+PyPDF2
+python-docx
+numpy
+pandas
+openai>=1.30.0
+tiktoken
+joblib
